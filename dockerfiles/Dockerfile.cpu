@@ -1,0 +1,40 @@
+FROM ubuntu:20.04 AS build
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt update &&\
+    apt install -y \
+        build-essential \
+        python3 \
+        python3-dev \
+        python3-pip \
+        gcc \
+        g++ \
+        git \
+        ffmpeg \
+        libsm6 \
+        libxext6 \
+        libjpeg-dev \
+        libopenexr-dev \
+        openexr \
+        libglfw3-dev \
+        libglfw3 \
+        libassimp-dev \
+        zlib1g-dev
+
+RUN pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
+
+RUN git clone https://github.com/hsiungc/gdrnet-251-project.git
+
+RUN mkdir gdrnet-251-project/datasets/BOP_DATASETS
+
+RUN python3 -m pip install 'git+https://github.com/facebookresearch/detectron2.git'
+
+RUN cd /gdrnet-251-project && \
+    sh scripts/install_deps.sh && \
+    sh core/csrc/compile.sh
+
+RUN apt autoremove && apt clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+CMD ["bash"]
