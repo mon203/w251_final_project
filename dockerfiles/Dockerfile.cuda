@@ -22,6 +22,10 @@ RUN apt update &&\
         libassimp-dev \
         zlib1g-dev
 
+RUN pip install loguru \
+        chardet \
+        setproctitle
+
 RUN git clone https://github.com/hsiungc/gdrnet-251-project.git
 
 RUN mkdir gdrnet-251-project/datasets/BOP_DATASETS
