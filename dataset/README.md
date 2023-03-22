@@ -14,20 +14,20 @@ blenderproc run examples/datasets/bop_challenge/main_lm_upright.py "[DATA_PATH]"
 ```
 6. Create remaining **train** mask images, ground truth files, and calculate model info:
 ```
-python bop_toolkit/scripts/calc_gt_masks.py path\to\lm_251
-python bop_toolkit/scripts/calc_gt_info.py path\to\lm_251
-python bop_toolkit/scripts/calc_model_info.py path\to\lm_251
+python bop_toolkit/scripts/calc_gt_masks.py path/to/lm_251
+python bop_toolkit/scripts/calc_gt_info.py path/to/lm_251
+python bop_toolkit/scripts/calc_model_info.py path/to/lm_251
 ``` 
 4. Render Test images:
 ```
-blenderproc run examples/datasets/bop_challenge/main_lm_upright.py "[DATA_PATH]" "[DATA_PATH]\blenderproc_textures" "path\to\lm_251" --num_scenes=40 --obj_ids '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16' --test
+blenderproc run examples/datasets/bop_challenge/main_lm_upright.py "[DATA_PATH]" "[DATA_PATH]\blenderproc_textures" "path/to/lm_251" --num_scenes=40 --obj_ids '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16' --test
 ``` 
 5. Copy `lm_251/models` to `lm_251/models_eval`
 6. Run `prune_test_folder.py`
 7. Create remaining data for Test:
 ```
-python  bop_toolkit/scripts/calc_gt_masks.py path\to\lm_251 --test
-python bop_toolkit/scripts/calc_gt_info.py path\to\lm_251 --test
+python  bop_toolkit/scripts/calc_gt_masks.py path/to/lm_251 --test
+python bop_toolkit/scripts/calc_gt_info.py path/to/lm_251 --test
 ```
 
 # References
