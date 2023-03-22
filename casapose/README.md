@@ -12,12 +12,6 @@ We use CASAPose's multi-object 6 DoF pose estimation model to train with LM (lin
 - obj_000012 = holepuncher
 - obj_000016 = headphones (the object created by our team)
 
-### CASAPose related information
-- [CASAPose GitHub](https://github.com/fraunhoferhhi/casapose)
-- [CASAPose Paper](https://iphome.hhi.de/gard/papers/bmvc2022_gard_hilsmann_eisert.pdf)
-
-![alt text](data/images/teaser.jpg)
-
 ## Steps to create our model training environment
 
 ### Step 1: Clone this GitHub repository
@@ -115,3 +109,10 @@ python test_casapose.py -c config/config_8.ini \
 ```
 
 The training and testing output are saved under the `~/w251_final_project/casapose/output` folder.
+
+### References: CASAPose related information
+- [CASAPose GitHub](https://github.com/fraunhoferhhi/casapose)
+- [CASAPose Paper](https://iphome.hhi.de/gard/papers/bmvc2022_gard_hilsmann_eisert.pdf)
+
+![alt text](data/images/teaser.jpg)
+
