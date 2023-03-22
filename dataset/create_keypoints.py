@@ -79,7 +79,7 @@ def process_keypoints(mesh_files):
 
 
 def main():
-    mesh_dir = r"D:\bop_toolkit\data\lm\blenderproc\bop_data\lm\models"
+    mesh_dir = r"D:\bop_toolkit\data\lm_251_small\lm\models"
     mesh_files = get_all_files(mesh_dir, "*.ply")
 
     process_keypoints(mesh_files)
