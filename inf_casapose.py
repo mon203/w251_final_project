@@ -263,7 +263,7 @@ def runnetwork(loader_iterator, batches):
         poses_gt = img_batch[10]
         confidence = None
         kp_loss = None
-        no_features = target_vertex.shape[3]  # vertex count
+        #no_features = target_vertex.shape[3]  # vertex count
         no_points = opt.no_points
         no_objects = target_seg.shape[3]
 
@@ -397,26 +397,26 @@ def runnetwork(loader_iterator, batches):
 
             add_correct = loss[5][1]
 
-            save_eval_batch(
-                img_batch,
-                output_seg,
-                target_dirs,
-                output_dirs,
-                estimated_poses,
-                estimated_points,
-                no_objects - 1,
-                no_features,
-                path_out=opt.evalf + "/visual_batch_eval_mask",
-                confidence=confidence,
-                add_correct=add_correct,
-            )
-        return loss, estimated_points, estimated_poses
+            # save_eval_batch(
+            #     img_batch,
+            #     output_seg,
+            #     target_dirs,
+            #     output_dirs,
+            #     estimated_poses,
+            #     estimated_points,
+            #     no_objects - 1,
+            #     no_features,
+            #     path_out=opt.evalf + "/visual_batch_eval_mask",
+            #     confidence=confidence,
+            #     add_correct=add_correct,
+            # )
+        return loss, estimated_points, estimated_poses, output_seg
 
     def test_pose_step(dataset_inputs):
         if opt.save_eval_batches or opt.write_poses:
-            loss, estimated_points, estimated_poses = test_step(dataset_inputs)
+            loss, estimated_points, estimated_poses, output_seg = test_step(dataset_inputs)
         else:
-            loss, estimated_points, estimated_poses = tf_test_step(dataset_inputs)
+            loss, estimated_points, estimated_poses, output_seg = tf_test_step(dataset_inputs)
 
         return [
             loss[0],
@@ -434,7 +434,7 @@ def runnetwork(loader_iterator, batches):
             loss[5][7],
             loss[6],
             loss[7],
-        ], estimated_points, estimated_poses
+        ], estimated_points, estimated_poses, output_seg
 
     test_loss = tf.zeros([5], dtype=tf.float32)
     test_pose_2d_count = tf.zeros([no_objects], dtype=tf.float32)
@@ -448,7 +448,7 @@ def runnetwork(loader_iterator, batches):
     for batch_idx in range(batches):
 
         img_batch = loader_iterator.get_next()
-        loss, estimated_points, estimated_poses = test_pose_step(img_batch)
+        loss, estimated_points, estimated_poses, output_seg = test_pose_step(img_batch)
         test_pose_2d_count += loss[5]
         test_pose_3d_count += loss[6]
         test_pose_count_gt += loss[7]
@@ -457,6 +457,11 @@ def runnetwork(loader_iterator, batches):
         test_pose_err_3d += loss[10]
         missed_object_count += loss[11]
         test_loss += loss[0:5]
+        
+        tf.print("Estimated Coordinates: {}".format(estimated_points), summarize=-1)
+        tf.print("Estimated Poses: {}".format(estimated_poses), summarize=-1)
+        tf.print("Segmentation Masks: {}".format(output_seg), summarize=-1)
+        tf.print("Labels: TESTING") #{}".format(test_pose_count_gt), summarize=-1)
 
     test_loss /= batches
 
@@ -466,7 +471,7 @@ def runnetwork(loader_iterator, batches):
     detection_count = tf.where(test_pose_count_gt == 0.0, 0.0, detection_count)
     precision = tf.math.divide_no_nan(test_pose_3d_count, detection_count)
 
-    return loader_iterator, estimated_points, estimated_poses
+    return loader_iterator, estimated_points, estimated_poses, output_seg
 
 
 testingdata_iterator = iter(testingdata)

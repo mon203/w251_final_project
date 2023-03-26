@@ -2,6 +2,10 @@ import cv2
 import numpy as np
 from draw_bb.drawbb import draw_bb
 
+from casapose.inf_casapose import runnetwork
+
+# Load model & weights
+#model = cv2.dnn.readNetFromTensorflow("frozen_model.pb")
 
 #load video
 cap = cv2.VideoCapture('drive/MyDrive/MIDS/w251/final_project/desk.mp4')
@@ -17,14 +21,17 @@ def video_processor(vid):
             break
     
         #run model
-        # bb_boxes = model.run()
+        _, estimated_points, estimated_poses, output_seg = runnetwork(frame)
+        #bb_boxes = model.run()
+        # model.setInput(frame)
+
+        # output = model.forward()
 
         # Display the frame
-        for bb in bb_boxes:
-          frame = draw_bb(bb,frame)
+        frame = draw_bb(estimated_points,frame) # add in output
     
         print("picture: " + str(i))
-        cv2_imshow(frame)
+        cv2.imshow(frame)
         cv2.destroyAllWindows()
 
         cv2.waitKey(1)
