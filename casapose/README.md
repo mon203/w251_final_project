@@ -45,6 +45,22 @@ Download the following zip files from this [Google Share](https://drive.google.c
 - lmo_base.zip
 - lm_test_bop19.zip
 
+The easiest way to do this is by using `gdown`
+
+```bash
+pip install gdown
+
+cd ~/w251_final_project/casapose/import_data/tmp/
+
+gdown --id 1jmB1NryfngMSM93ZGyFNjd5lO8MkwoFG
+gdown --id 1eS90Sohb1As5k22XBpZOGHahwDwHD2in
+gdown --id 1M7kR_rXPYd-g4e25d69VhPl9rAQtb-He
+gdown --id 1ReW56kC5jyGJTEHe2ppXdTX6t898bQt8
+gdown --id 1zfcusX1paUO0FTla5xN7YKh8qbhyGWtG
+gdown --id 1LeNWTPACxHu9ggEYQJDC3JGDZ5Mppwcr
+gdown --id 1YY6BPyW7YYtV6XxHlEtuWz4m7cS_qwld
+```
+
 Next, run the following commands to prepare data with the data preparation script.
 
 ```bash
@@ -102,6 +118,24 @@ Example of testing the 8-object model with Linemod Occlusion Dataset
 python test_casapose.py -c config/config_8.ini \
     --load_h5_weights 1 \
     --load_h5_filename result_w \
+    --datatest $DATAPATH/lmo/test \
+    --datameshes $DATAPATH/lmo/models \
+    --train_vectors_with_ground_truth 0 \
+    --save_eval_batches 1
+```
+
+To run the test without going through the training, you can download our training file here:
+
+```bash
+cd ~/w251_final_project/casapose/output/data/pretrained_models/
+
+# download the pre-train weight file
+gdown --id 1uhQT3xgV3c8A83sl4wEwbcL7A0C_5VFx
+
+# use this pre-train weight file for testing
+python test_casapose.py -c config/config_8.ini \
+    --load_h5_weights 1 \
+    --load_h5_filename ../../../data/pretrained_models/result_w \
     --datatest $DATAPATH/lmo/test \
     --datameshes $DATAPATH/lmo/models \
     --train_vectors_with_ground_truth 0 \
