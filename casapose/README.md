@@ -124,10 +124,13 @@ python test_casapose.py -c config/config_8.ini \
     --save_eval_batches 1
 ```
 
+### Test evaluation without training
 To run the test without going through the training, you can download our training file here:
 
 ```bash
-cd ~/w251_final_project/casapose/output/data/pretrained_models/
+cd ~/w251_final_project/casapose/data/
+mkdir pretrained_models
+cd pretrained_models
 
 # download the pre-train weight file
 gdown --id 1uhQT3xgV3c8A83sl4wEwbcL7A0C_5VFx
