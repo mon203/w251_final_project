@@ -128,15 +128,13 @@ python test_casapose.py -c config/config_8.ini \
 To run the test without going through the training, you can download our training file here:
 
 ```bash
-cd ~/w251_final_project/casapose/data/
-mkdir pretrained_models
-cd pretrained_models
+cd ~/w251_final_project/casapose/data/pretrained_models
 
 # download the pre-train weight file
 gdown --id 1uhQT3xgV3c8A83sl4wEwbcL7A0C_5VFx
 
 # use this pre-train weight file for testing
-python test_casapose.py -c config/config_8.ini \
+python test_casapose.py -c config/config_8_16.ini \
     --load_h5_weights 1 \
     --load_h5_filename ../../../data/pretrained_models/result_w \
     --datatest $DATAPATH/lmo/test \
