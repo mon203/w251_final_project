@@ -168,9 +168,9 @@ if args.gen_train:
     copyanything(os.path.join(tmp_path, "lm/train_pbr/000049"), os.path.join(tmp_path, "lm/val_pbr/000049"))
     shutil.rmtree(os.path.join(tmp_path, "lm/train_pbr/000049"))
     # for test eval, move 000048 folder to lmo and remove org. 000002 folder
-    copyanything(os.path.join(tmp_path, "lm/train_pbr/000048"), os.path.join(tmp_path, "lmo/test/000048"))
-    shutil.rmtree(os.path.join(tmp_path, "lm/train_pbr/000048"))
-    shutil.rmtree(os.path.join(tmp_path, "lmo/test/000002"))
+    # copyanything(os.path.join(tmp_path, "lm/train_pbr/000048"), os.path.join(tmp_path, "lmo/test/000048"))
+    # shutil.rmtree(os.path.join(tmp_path, "lm/train_pbr/000048"))
+    # shutil.rmtree(os.path.join(tmp_path, "lmo/test/000002"))
 
 # overwrite with prepared data
 if args.gen_hb:
@@ -209,6 +209,12 @@ if args.gen_train:
     generate_data(lm_path, lm_path_out, settings, model_folder="models_eval", image_folder="train_pbr")
     settings["copy_meshes"] = False
     generate_data(lm_path, lm_path_out, settings, model_folder="models_eval", image_folder="val_pbr")
+    
+    # for test eval, move 000048 folder to lmo and remove org. 000002 folder
+    copyanything(os.path.join(lm_path_out, "train_pbr/000048"), os.path.join(lmo_path_out, "test/000048"))
+    shutil.rmtree(os.path.join(lm_path_out, "train_pbr/000048"))
+    shutil.rmtree(os.path.join(lmo_path_out, "test/000002"))
+
 
 if args.gen_hb:
     settings["filetype_in"] = "png"
