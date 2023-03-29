@@ -246,16 +246,17 @@ def save_pose_comparison_single_sample(
     eps = 1e-4
     # img_cuboids = img_keypoints.copy()
     tf.print(add_correct, summarize=-1)
-    for obj_idx in range(len(gt_poses)):
+    for obj_idx in range(len(estimated_poses)):
         if add_correct is not None:
             add_obj_correct = add_correct[obj_idx]
         else:
             add_obj_correct = True
 
-        if add_obj_correct:
-            est_color = (0, 255, 0)
-        else:
-            est_color = (255, 0, 0)
+        # if add_obj_correct:
+            # est_color = (0, 255, 0)
+        est_color = (0, 255, 0)
+        # else:
+            # est_color = (255, 0, 0)
 
         inst_idx = 0
 
