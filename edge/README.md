@@ -20,7 +20,7 @@ conda env create -f environment.yml
 conda activate casapose
 ```
 
-### Step 3: Download pretrained weight file
+### Step 3: Download pretrained weight file (can skip. .h5 file already included)
 ```bash
 # install gdown if you haven't
 pip install gdown
@@ -42,12 +42,12 @@ docker build -t "casapose:Dockerfile" .
 cd ~/w251_final_project/edge
 
 # run this for a single gpu
-docker run -it --gpus '"device=0"' --ulimit memlock=-1 --ulimit stack=67108864 \
+docker run -it --net=host --gpus '"device=0"' --ulimit memlock=-1 --ulimit stack=67108864 \
     --rm --shm-size=2g -e "CUDA_VISIBLE_DEVICES=0" -e "NVIDIA_VISIBLE_DEVICES=0" \
     -v $DATAPATH:/workspace/data -v $(pwd):/workspace/CASAPose casapose:Dockerfile bash
 
 # or, run this for multi gpu
-docker run -it --gpus all --ulimit memlock=-1 --ulimit stack=67108864 \
+docker run -it --net=host --gpus all --ulimit memlock=-1 --ulimit stack=67108864 \
     --rm --shm-size=2g -v $DATAPATH:/workspace/data \
     -v $(pwd):/workspace/CASAPose casapose:Dockerfile bash
 ```
