@@ -18,7 +18,8 @@ from casapose.pose_estimation.pose_evaluation import (
 from casapose.pose_estimation.voting_layers_2d import CoordLSVotingWeighted
 from casapose.pose_models.tfkeras import Classifiers
 from casapose.utils.config_parser import parse_config
-from casapose.utils.dataset_utils import save_eval_batch  # , save_eval_comparison
+#from casapose.utils.dataset_utils import save_eval_batch  # , save_eval_comparison
+from casapose.utils.inf_dataset_utils import save_eval_batch  # , save_eval_comparison
 from casapose.utils.image_utils import get_all_vectorfields
 # from casapose.utils.io_utils import write_poses
 from casapose.utils.loss_functions import (
@@ -194,7 +195,7 @@ net = CASAPose(
 # checkpoint = tf.train.Checkpoint(network=net)  # , optimizer=optimizer)
 
 
-net_path = "/casapose/data/pretrained_models/result_w_8.h5" # CHANGE TO .H5 FILEPATH
+net_path = "/workspace/CASAPose/data/pretrained_models/result_w.h5" # CHANGE TO .H5 FILEPATH
 net.load_weights(net_path, by_name=True, skip_mismatch=True)
 
 
@@ -388,7 +389,11 @@ def runnetwork(loader_iterator, batches):
         tf.print("Estimated Poses: {}".format(estimated_poses), summarize=-1)
         tf.print("Segmentation Masks: {}".format(output_seg), summarize=-1)
         tf.print("Image: {}".format(type(image)), summarize=-1)
-        tf.print("Labels: TESTING") #{}".format(test_pose_count_gt), summarize=-1)
+        #tf.print("Labels: TESTING") #{}".format(test_pose_count_gt), summarize=-1)
+        tf.print("Objects of Interest: {}".format(objectsofinterest), summarize=-1)
+        tf.print("length: {}".format(len(objectsofinterest)), summarize=-1)
+        tf.print("Number of Objects: {}".format(no_objects), summarize=-1)
+        
 
         return image
         # return loss, estimated_points, estimated_poses, output_seg
@@ -461,13 +466,13 @@ def runnetwork(loader_iterator, batches):
 
 
 # cap = cv2.VideoCapture('drive/MyDrive/MIDS/w251/final_project/desk.mp4')
-img = cv2.imread("color.png")
 
-test_dataset = ImageOnlyDataset(img)
+#img = cv2.imread("color.png")
+#test_dataset = ImageOnlyDataset(img)
 
 test_dataset = VectorfieldDataset(
-    root="/casapose/data/datasets/lm/test", # Hardcoded param
-    path_meshes="/casapose/data/datasets/lm/models", # Hardcoded param
+    root="/workspace/CASAPose/import_data/test/test", # Hardcoded param
+    path_meshes="/workspace/CASAPose/import_data/test/models", # Hardcoded param
     path_filter_root=None, # Hardcoded param
     color_input=True, # Hardcoded param
     no_points=9, # Taken from config_8.ini
