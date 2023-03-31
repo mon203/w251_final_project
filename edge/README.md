@@ -39,6 +39,8 @@ To setup and run a CASAPose docker container:
 # build the docker container
 docker build -t "casapose:Dockerfile" .
 
+export DATAPATH=~/w251_final_project/edge/import_data/
+
 cd ~/w251_final_project/edge
 
 # run this for a single gpu
