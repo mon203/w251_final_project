@@ -50,6 +50,7 @@ class VectorfieldDataset:
         separated_vectorfields=False,
         wxyz_quaterion_input=False,  # dataset has wrong quaternion format (only for test on server use fix_dataset.py instead)
         path_filter_root=None,
+        save_gt = False,
     ):
         print('NEW VECTOR FIELD CLASS')
         ###################
@@ -78,6 +79,7 @@ class VectorfieldDataset:
         self.separated_vectorfields = separated_vectorfields
         self.wxyz_quaterion_input = wxyz_quaterion_input
         self.imgs = []
+        self.save_gt = save_gt
         self.gt_img = {}
 
         # second dataset can be used if a special distribution between a new and a known object should be used
@@ -725,14 +727,15 @@ class VectorfieldDataset:
                         filetype = "jpg"
                   
                 ### GT LABEL
-                json_path = imgpath.replace(filetype, "json")
-                data = json.load(open(json_path))
-                key = str(json_path)
-                self.gt_img[key] = {'object': [], 'centroid': []} # SET PATH OF IMAGE
-                for n, img in enumerate(data['objects']): 
-                    self.gt_img[key]['object'].append(img['class'])
-                    self.gt_img[key]['centroid'].append(img['cuboid_centroid'][:2])
-                    #['cuboid_centroid'] = img['cuboid_centroid'][:2] # JUST X AND Y
+                if self.save_gt: 
+                    json_path = imgpath.replace(filetype, "json")
+                    data = json.load(open(json_path))
+                    key = str(json_path)
+                    self.gt_img[key] = {'object': [], 'centroid': []} # SET PATH OF IMAGE
+                    for n, img in enumerate(data['objects']): 
+                        self.gt_img[key]['object'].append(img['class'])
+                        self.gt_img[key]['centroid'].append(img['cuboid_centroid'][:2])
+                        #['cuboid_centroid'] = img['cuboid_centroid'][:2] # JUST X AND Y
 
                 if exists(imgpath) and exists(seg_path) and exists(imgpath.replace(filetype, "json")):
                     imgs.append(
