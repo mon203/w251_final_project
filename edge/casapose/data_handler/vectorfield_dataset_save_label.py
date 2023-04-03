@@ -534,6 +534,7 @@ class VectorfieldDataset:
         """
         Loads the maximum number of instances in a datasample from a json file.
         """
+        print('LOAD JSON MINIMAL')
         with open(path) as data_file:
             data = json.load(data_file)
         class_count = np.zeros([len(objectsofinterest)], dtype=np.int32)
@@ -726,15 +727,15 @@ class VectorfieldDataset:
                         imgpath = imgpath.replace(filetype, "jpg")
                         filetype = "jpg"
                   
-                ### GT LABEL
+                ### PR ADDED GT LABEL
                 if self.save_gt: 
                     json_path = imgpath.replace(filetype, "json")
                     data = json.load(open(json_path))
                     key = str(json_path)
-                    self.gt_img[key] = {'object': [], 'centroid': []} # SET PATH OF IMAGE
+                    self.gt_img[key] = {'object': [], 'centroid': []} # SET KEY AS PATH OF IMAGE
                     for n, img in enumerate(data['objects']): 
                         self.gt_img[key]['object'].append(img['class'])
-                        self.gt_img[key]['centroid'].append(img['cuboid_centroid'][:2])
+                        self.gt_img[key]['centroid'].append(img['projected_cuboid_centroid'][:2])
                         #['cuboid_centroid'] = img['cuboid_centroid'][:2] # JUST X AND Y
 
                 if exists(imgpath) and exists(seg_path) and exists(imgpath.replace(filetype, "json")):
