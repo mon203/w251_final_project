@@ -14,13 +14,13 @@ from casapose.utils.config_parser import parse_config
 
 from casapose.utils.geometry_utils import apply_offsets, project
 from tensorflow.python.ops.numpy_ops import np_config
-np_config.enable_numpy_behavior()
+# np_config.enable_numpy_behavior()
 from casapose.utils.draw_utils import draw_bb
 
 from PIL import Image
 
 
-def input_parameters(h5_path, meshes_dir):
+def input_parameters(h5_path, meshes_dir, synthetic_image):
     opt = parse_config()
     opt.modelname = 'casapose_c_gcu5'
     opt.load_h5_weights = True
@@ -190,9 +190,14 @@ def input_parameters(h5_path, meshes_dir):
                           [96.808556, 94.26338, -32.21377],
                           [96.808556, 94.26338, 29.116282]]]])
     cuboids = tf.convert_to_tensor(cuboids, dtype=tf.float32)
-    camera_matrix = [[345.5395354181145, 0, 319.4688241083385],
-                     [0, 345.25337576116874, 237.47917860129158],
-                     [0, 0, 1]]  # Samsung S22
+    if synthetic_image:
+        camera_matrix = np.array([[[572.4114, 0., 325.2611],
+                                   [0., 573.57043, 242.049],
+                                   [0., 0., 1.]]])
+    else:  # Samsung S22
+        camera_matrix = [[[345.5395354181145, 0, 319.4688241083385],
+                         [0, 345.25337576116874, 237.47917860129158],
+                         [0, 0, 1]]]
     camera_matrix = tf.convert_to_tensor(camera_matrix, dtype=tf.float32)
 
     return opt, no_objects, height, width, input_segmentation_shape, checkpoint_path, \
@@ -206,10 +211,6 @@ def load_casapose(opt, no_objects, height, width, input_segmentation_shape, chec
     if opt.modelname == "pvnet":
         ver_dim = ver_dim * no_objects
 
-    if opt.estimate_confidence:
-        # assert separated_vectorfields is not None, "confidence not compatible with this model"
-        ver_dim += opt.no_points
-
     net = CASAPose(
         ver_dim=ver_dim,
         seg_dim=1 + no_objects,
@@ -221,18 +222,13 @@ def load_casapose(opt, no_objects, height, width, input_segmentation_shape, chec
 
     # Load model checkpoint
     checkpoint = tf.train.Checkpoint(network=net)  # , optimizer=optimizer)
-
     if opt.load_h5_weights is True:
         net.load_weights(opt.load_h5_filename + ".h5", by_name=True, skip_mismatch=True)
-
     elif opt.net != "":
         checkpoint.restore(tf.train.latest_checkpoint(checkpoint_path)).expect_partial()
-
     for layer in net.layers:
         layer.trainable = False
-
     # net.summary()
-
     return net
 
 
@@ -255,7 +251,7 @@ def inference_on_image(image, net, no_objects, no_points, keypoints, camera_matr
 
 
 def draw_bb_inference(
-        img,  # [480, 640, 3]
+        img,
         estimated_poses,  # [8, 3, 4]
         cuboids,  # [8, 1, 8, 3]
         camera_matrix,  # [1, 3, 3]
@@ -310,30 +306,50 @@ def draw_bb_inference(
     return img_cuboids
 
 
-def load_image():
-    image = tf.random.uniform([448, 448, 3])
+def load_image(path):
+    # tensor = tf.random.uniform([448, 448, 3])
 
-    return image
+    img = tf.io.read_file(path)
+    tensor = tf.io.decode_image(img, channels=3, dtype=tf.dtypes.float32)
+    return tensor
+
+
+def image_transformation(img, cam_matrix):
+    # Crop image to 448, 448, 3
+    target_height, target_width = 448, 448
+    offset_height = int((img.shape[-3] - target_height) / 2)
+    offset_width = int((img.shape[-2] - target_width) / 2)
+    img = tf.image.crop_to_bounding_box(img, offset_height, offset_width, target_height, target_width)
+
+    # adjust the camera matrix according to https://stackoverflow.com/questions/74749690/how-will-the-camera-intrinsics-change-if-an-image-is-cropped-resized
+    cam_matrix = cam_matrix.numpy()
+    cam_matrix[0, 0, 2] = cam_matrix[0, 0, 2] - offset_width
+    cam_matrix[0, 1, 2] = cam_matrix[0, 1, 2] - offset_height
+    cam_matrix = tf.convert_to_tensor(cam_matrix, dtype=tf.float32)
+    return img, cam_matrix
 
 
 if __name__ == '__main__':
     h5_path = '../casapose/data/pretrained_models/result_w'
     meshes_dir = 'D:\\bop_toolkit\\data\\lm_251\\lm\\models'
     output_path = "output_251"
+    synthetic_images = True  # True if inference on synthetic image, False if on real image (Samsung S22)
 
     # Input parameters
     opt, no_objects, height, width, input_segmentation_shape, checkpoint_path, \
-    no_points, keypoints, camera_matrix, cuboids = input_parameters(h5_path, meshes_dir)
+    no_points, keypoints, camera_matrix, cuboids = input_parameters(h5_path, meshes_dir, synthetic_images)
 
     # Load Casapose model
     model = load_casapose(opt, no_objects, height, width, input_segmentation_shape, checkpoint_path)
 
-    # Load RGB image
-    image = load_image()
+    # Load RGB image, or read from webcam
+    image = load_image("import_data/test/test/000001/000001.jpg")
+
+    # Crop image
+    image, camera_matrix = image_transformation(image, camera_matrix)
 
     # Infer poses from image
     poses_est = inference_on_image(image, model, no_objects, no_points, keypoints, camera_matrix, opt)
 
     # Bounding box
     image_with_predictions = draw_bb_inference(image, poses_est, cuboids, camera_matrix, output_path)
-
