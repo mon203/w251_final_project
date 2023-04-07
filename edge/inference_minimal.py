@@ -12,22 +12,31 @@ from casapose.pose_estimation.voting_layers_2d import CoordLSVotingWeighted
 from casapose.pose_models.tfkeras import Classifiers
 from casapose.utils.config_parser import parse_config
 
+from casapose.utils.geometry_utils import apply_offsets, project
+from tensorflow.python.ops.numpy_ops import np_config
+np_config.enable_numpy_behavior()
+from casapose.utils.draw_utils import draw_bb
 
-def inference_on_image(image):
-    # Create necessary variables
+from PIL import Image
+
+
+def input_parameters(h5_path, meshes_dir):
+    opt = parse_config()
+    opt.modelname = 'casapose_c_gcu5'
+    opt.load_h5_weights = True
+    opt.load_h5_filename = h5_path
+    opt.datameshes = meshes_dir
+    opt.train_vectors_with_ground_truth = False
+    opt.save_eval_batches = True
+    opt.object = 'obj_000001,obj_000005,obj_000006,obj_000008,obj_000009,obj_000010,obj_000011,obj_000016'
+
     objectsofinterest = [x.strip() for x in opt.object.split(",")]
     no_objects = len(objectsofinterest)
-
-    separated_vectorfields = opt.modelname == "pvnet"
     no_points = opt.no_points
-
     height = opt.imagesize_test[0]
     width = opt.imagesize_test[1]
-
     input_segmentation_shape = None
-
     checkpoint_path = opt.outf + "/" + opt.net
-
     keypoints_array = np.array([[[[[-9.7732497e-03, 3.6659201e-03, -1.4534000e-03],
                                    [3.6046398e+01, -1.4680500e+01, -4.5020599e+01],
                                    [-3.0289101e+01, -7.2402501e+00, -4.2632900e+01],
@@ -108,14 +117,89 @@ def inference_on_image(image):
                                    [5.0045956e+01, 5.1196590e+01, -1.4792501e+01],
                                    [2.3459833e+01, -4.9363476e+01, 1.9859182e+01]]]]],
                                )
-
     keypoints = tf.convert_to_tensor(keypoints_array, dtype=tf.float32)
+    cuboids = np.array([[[[-37.92094, -38.788555, -45.88129],
+                          [-37.92094, -38.788555, 45.87838],
+                          [-37.92094, 38.795883, -45.88129],
+                          [-37.92094, 38.795883, 45.87838],
+                          [37.901394, -38.788555, -45.88129],
+                          [37.901394, -38.788555, 45.87838],
+                          [37.901394, 38.795883, -45.88129],
+                          [37.901394, 38.795883, 45.87838]]],
 
+                        [[[-50.35713, -90.89071, -96.8516],
+                          [-50.35713, -90.89071, 96.82902],
+                          [-50.35713, 90.8861, -96.8516],
+                          [-50.35713, 90.8861, 96.82902],
+                          [50.38973, -90.89071, -96.8516],
+                          [50.38973, -90.89071, 96.82902],
+                          [50.38973, 90.8861, -96.8516],
+                          [50.38973, 90.8861, 96.82902]]],
+
+                        [[[-33.44303, -63.791, -58.71809],
+                          [-33.44303, -63.791, 58.707314],
+                          [-33.44303, 63.781857, -58.71809],
+                          [-33.44303, 63.781857, 58.707314],
+                          [33.47729, -63.791, -58.71809],
+                          [33.47729, -63.791, 58.707314],
+                          [33.47729, 63.781857, -58.71809],
+                          [33.47729, 63.781857, 58.707314]]],
+
+                        [[[-114.72308, -37.718895, -103.983604],
+                          [-114.72308, -37.718895, 103.97095],
+                          [-114.72308, 37.706425, -103.983604],
+                          [-114.72308, 37.706425, 103.97095],
+                          [114.71827, -37.718895, -103.983604],
+                          [114.71827, -37.718895, 103.97095],
+                          [114.71827, 37.706425, -103.983604],
+                          [114.71827, 37.706425, 103.97095]]],
+
+                        [[[-52.200897, -38.71081, -42.8214],
+                          [-52.200897, -38.71081, 42.82927],
+                          [-52.200897, 38.691044, -42.8214],
+                          [-52.200897, 38.691044, 42.82927],
+                          [52.194057, -38.71081, -42.8214],
+                          [52.194057, -38.71081, 42.82927],
+                          [52.194057, 38.691044, -42.8214],
+                          [52.194057, 38.691044, 42.82927]]],
+
+                        [[[-75.0917, -54.39756, -34.629425],
+                          [-75.0917, -54.39756, 34.602924],
+                          [-75.0917, 53.53758, -34.629425],
+                          [-75.0917, 53.53758, 34.602924],
+                          [75.05686, -54.39756, -34.629425],
+                          [75.05686, -54.39756, 34.602924],
+                          [75.05686, 53.53758, -34.629425],
+                          [75.05686, 53.53758, 34.602924]]],
+
+                        [[[-18.320473, -38.923126, -86.376724],
+                          [-18.320473, -38.923126, 86.3904],
+                          [-18.320473, 38.900208, -86.376724],
+                          [-18.320473, 38.900208, 86.3904],
+                          [18.340351, -38.923126, -86.376724],
+                          [18.340351, -38.923126, 86.3904],
+                          [18.340351, 38.900208, -86.376724],
+                          [18.340351, 38.900208, 86.3904]]],
+
+                        [[[-98.16961, -85.56149, -32.21377],
+                          [-98.16961, -85.56149, 29.116282],
+                          [-98.16961, 94.26338, -32.21377],
+                          [-98.16961, 94.26338, 29.116282],
+                          [96.808556, -85.56149, -32.21377],
+                          [96.808556, -85.56149, 29.116282],
+                          [96.808556, 94.26338, -32.21377],
+                          [96.808556, 94.26338, 29.116282]]]])
+    cuboids = tf.convert_to_tensor(cuboids, dtype=tf.float32)
     camera_matrix = [[345.5395354181145, 0, 319.4688241083385],
                      [0, 345.25337576116874, 237.47917860129158],
-                     [0, 0, 1]],
+                     [0, 0, 1]]  # Samsung S22
     camera_matrix = tf.convert_to_tensor(camera_matrix, dtype=tf.float32)
 
+    return opt, no_objects, height, width, input_segmentation_shape, checkpoint_path, \
+           no_points, keypoints, camera_matrix, cuboids
+
+
+def load_casapose(opt, no_objects, height, width, input_segmentation_shape, checkpoint_path):
     # Create model
     CASAPose = Classifiers.get(opt.modelname)
     ver_dim = opt.no_points * 2
@@ -123,7 +207,7 @@ def inference_on_image(image):
         ver_dim = ver_dim * no_objects
 
     if opt.estimate_confidence:
-        assert separated_vectorfields is not None, "confidence not compaitble with this model"
+        # assert separated_vectorfields is not None, "confidence not compatible with this model"
         ver_dim += opt.no_points
 
     net = CASAPose(
@@ -136,7 +220,6 @@ def inference_on_image(image):
     )
 
     # Load model checkpoint
-    checkpoint_prefix = os.path.join(checkpoint_path, "ckpt")
     checkpoint = tf.train.Checkpoint(network=net)  # , optimizer=optimizer)
 
     if opt.load_h5_weights is True:
@@ -150,6 +233,10 @@ def inference_on_image(image):
 
     # net.summary()
 
+    return net
+
+
+def inference_on_image(image, net, no_objects, no_points, keypoints, camera_matrix, opt):
     # Instantiate model and run `image` through model to infer estimated poses
     output_net = net([tf.expand_dims(image, 0)], training=False)
     output_seg, output_dirs, confidence = tf.split(output_net, [no_objects, no_points * 2, -1], 3)
@@ -167,19 +254,86 @@ def inference_on_image(image):
     return poses_est
 
 
+def draw_bb_inference(
+        img,  # [480, 640, 3]
+        estimated_poses,  # [8, 3, 4]
+        cuboids,  # [8, 1, 8, 3]
+        camera_matrix,  # [1, 3, 3]
+        path,
+        file_prefix='251_output',
+        gt_pose=None,  # [8, 1, 3, 4]
+        normal=[0.5, 0.5],
+):
+    # image
+    img_keypoints = tf.cast(((img * normal[1]) + normal[0]) * 255, dtype=tf.uint8).numpy()
+    img_cuboids = img_keypoints.copy()
+
+    eps = 1e-4
+
+    for obj_idx, obj_pose in enumerate(estimated_poses):
+
+        inst_idx = 0
+        obj_pose_est = estimated_poses[obj_idx].numpy()
+        instance_cuboids = cuboids[obj_idx][inst_idx].numpy()
+
+        # draw bb - ESTIMATED
+        valid_est = np.abs(np.sum(obj_pose_est)) > eps
+        if valid_est:
+            # print('est')
+            # print(obj_pose_est.shape)
+            transformed_cuboid_points2d, _ = project(instance_cuboids, camera_matrix.numpy(), obj_pose_est)
+            transformed_cuboid_points2d = np.reshape(transformed_cuboid_points2d, (8, 2))
+            draw_bb(transformed_cuboid_points2d, img_cuboids, (0, 255, 0))
+        else:
+            print(obj_idx)
+            print('skipped obj est')
+
+        # GT
+        if gt_pose is not None:
+            instance_pose_gt = gt_pose[obj_idx][inst_idx].numpy()
+            valid_gt = np.abs(np.sum(instance_pose_gt)) > eps
+            if valid_gt:
+                print('gt')
+                gt_pose_est = gt_pose[obj_idx].numpy()
+                print(gt_pose_est[0].shape)
+                transformed_cuboid_points2d_gt, _ = project(instance_cuboids, camera_matrix.numpy(),
+                                                            gt_pose_est[0])
+                print(gt_pose_est[0])
+                draw_bb(transformed_cuboid_points2d_gt, img_cuboids, (255, 0, 0))
+            else:
+                print('skipped obj')
+
+    # save image
+    img_cuboids = Image.fromarray((img_cuboids).astype("uint8"))
+    img_cuboids.save(path + "/" + str(file_prefix) + "_cuboids_all.png")
+
+    return img_cuboids
+
+
+def load_image():
+    image = tf.random.uniform([448, 448, 3])
+
+    return image
+
+
 if __name__ == '__main__':
-    opt = parse_config()
-    opt.modelname = 'casapose_c_gcu5'
-    opt.load_h5_weights = True
-    opt.load_h5_filename = '../casapose/data/pretrained_models/result_w'
-    opt.datatest = '../../../data/datasets/lm_251/test'
-    opt.datameshes = 'D:\\bop_toolkit\\data\\lm_251\\lm\\models'
-    opt.train_vectors_with_ground_truth = False
-    opt.save_eval_batches = True
-    opt.object = 'obj_000001,obj_000005,obj_000006,obj_000008,obj_000009,obj_000010,obj_000011,obj_000016'
+    h5_path = '../casapose/data/pretrained_models/result_w'
+    meshes_dir = 'D:\\bop_toolkit\\data\\lm_251\\lm\\models'
+    output_path = "output_251"
 
-    random_image = tf.random.uniform([448, 448, 3])
+    # Input parameters
+    opt, no_objects, height, width, input_segmentation_shape, checkpoint_path, \
+    no_points, keypoints, camera_matrix, cuboids = input_parameters(h5_path, meshes_dir)
 
-    poses_est = inference_on_image(random_image)
+    # Load Casapose model
+    model = load_casapose(opt, no_objects, height, width, input_segmentation_shape, checkpoint_path)
 
-    print(f"The pose estimates for this image are: {poses_est}")
+    # Load RGB image
+    image = load_image()
+
+    # Infer poses from image
+    poses_est = inference_on_image(image, model, no_objects, no_points, keypoints, camera_matrix, opt)
+
+    # Bounding box
+    image_with_predictions = draw_bb_inference(image, poses_est, cuboids, camera_matrix, output_path)
+
