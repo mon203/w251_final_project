@@ -17,6 +17,7 @@ from tensorflow.python.ops.numpy_ops import np_config
 # np_config.enable_numpy_behavior()
 from casapose.utils.draw_utils import draw_bb
 
+import cv2
 from PIL import Image
 
 
@@ -84,8 +85,6 @@ def input_parameters(h5_path, meshes_dir, synthetic_image):
         outf = 'train_casapose_8_16_objects'
 
         # config
-        train_vectors_with_ground_truth = 1
-        load_h5_weights = 0
         copy_weights_from_backup_network = 0
         copy_weights_add_confidence_maps = 0
         objects_in_input_network = 8
@@ -100,17 +99,12 @@ def input_parameters(h5_path, meshes_dir, synthetic_image):
 
         evalf = 'output'
         datatest = 'import_data/test/test'
-        datameshes = 'import_data/test/models'
-        # datatest = '/workspace/CASAPose/import_data/test/test'
-        # datameshes = '/workspace/CASAPose/import_data/test/models'
         data = ''
         datatest_path_filter = None
         color_dataset = 1
         train_validation_split = None  # 0.9
         backbonename = 'resnet18'
         load_h5_weights = 1
-        # load_h5_filename = '../../../data/pretrained_models/result_w'
-        load_h5_filename = 'data/pretrained_models' + '/result_w.h5'
 
     # opt = parse_config()
     # opt.modelname = 'casapose_c_gcu5'
@@ -355,6 +349,30 @@ def draw_bb_inference(
         gt_pose=None,  # [8, 1, 3, 4]
         normal=[0.5, 0.5],
 ):
+    obj_list = ['obj_000001',
+                'obj_000005',
+                'obj_000006',
+                'obj_000008',
+                'obj_000009',
+                'obj_000010',
+                'obj_000011',
+                'obj_000016']
+
+    obj_dict = {
+        "obj_000001": "ape",
+        "obj_000005": "wateringcan",
+        "obj_000006": "cat",
+        "obj_000008": "driller",
+        "obj_000009": "duck",
+        "obj_000010": "eggbox",
+        "obj_000011": "glue",
+        #	"obj_000012": "holepuncher", # replaced with headphones
+        "obj_000016": "headphones"
+    }
+
+    colors = {'blue': (255, 0, 0), 'red': (220, 20, 60), 'white': (255, 255, 255)}
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    fontScale = 0.6
 
     estimated_poses = tf.reshape(estimated_poses, [8, 3, 4])
 
@@ -373,8 +391,8 @@ def draw_bb_inference(
         # draw bb - ESTIMATED
         valid_est = np.abs(np.sum(obj_pose_est)) > eps
         if valid_est:
-            # print('est')
-            # print(obj_pose_est.shape)
+            print('est')
+            print(obj_pose_est.shape)
             transformed_cuboid_points2d, _ = project(instance_cuboids, camera_matrix.numpy(), obj_pose_est)
             transformed_cuboid_points2d = np.reshape(transformed_cuboid_points2d, (8, 2))
             draw_bb(transformed_cuboid_points2d, img_cuboids, (0, 255, 0))
@@ -397,8 +415,33 @@ def draw_bb_inference(
             else:
                 print('skipped obj')
 
+    ### IMAGE LABEL IN CENTER OF CUBE
+    for obj_idx, obj_pose in enumerate(estimated_poses):
+
+        inst_idx = 0
+        obj_pose_est = estimated_poses[obj_idx].numpy()
+        instance_cuboids = cuboids[obj_idx][inst_idx].numpy()
+
+        # draw bb - ESTIMATED
+        valid_est = np.abs(np.sum(obj_pose_est)) > eps
+        if valid_est:
+            transformed_cuboid_points2d, _ = project(instance_cuboids, camera_matrix.numpy(), obj_pose_est)
+            transformed_cuboid_points2d = np.reshape(transformed_cuboid_points2d, (8, 2))
+
+            text = obj_dict[obj_list[obj_idx]]
+            thickness = 2
+            color = colors['white']
+            center = np.mean(transformed_cuboid_points2d, axis=0)
+            center = [int(i) for i in center]
+            img_test2 = cv2.putText(img_cuboids,
+                                    text,
+                                    center,  # [50, 100],
+                                    fontFace=font,
+                                    fontScale=fontScale,
+                                    color=color,
+                                    thickness=thickness)
+
     # save image
-    os.makedirs(path, exist_ok=True)
     img_cuboids = Image.fromarray((img_cuboids).astype("uint8"))
     img_cuboids.save(path + "/" + str(file_prefix) + "_cuboids_all.png")
 
