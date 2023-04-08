@@ -21,14 +21,105 @@ from PIL import Image
 
 
 def input_parameters(h5_path, meshes_dir, synthetic_image):
-    opt = parse_config()
-    opt.modelname = 'casapose_c_gcu5'
-    opt.load_h5_weights = True
+    class opt:
+        modelname = 'casapose_c_gcu5'
+        estimate_confidence = 1
+        estimate_coords = 1
+        confidence_regularization = 1
+        object = 'obj_000001,obj_000005,obj_000006,obj_000008,obj_000009,obj_000010,obj_000011,obj_000016'
+
+        no_points = 9
+        save_debug_batch = 0
+
+        imagesize = (448, 448)
+        imagesize_test = (480, 640)
+        crop_factor = 0.933333333
+        pretrained = 1
+        manualseed = 1237
+
+        # losses
+        mask_loss_weight = 1.0
+        vertex_loss_weight = 0.5
+        proxy_loss_weight = 0.015
+        keypoint_loss_weight = 0.007
+        filter_vertex_with_segmentation = 1
+        filter_high_proxy_errors = 0
+        use_bpnp_reprojection_loss = 0
+        max_keypoint_pixel_error = 12.5
+
+        # learning rate
+        lr = 0.001
+        lr_decay = 0.5
+        lr_epochs_steps = 50, 75, 90
+
+        # general
+        gpuids = 0, 1
+        loginterval = 10
+        epochs = 100
+        batchsize = 4
+        saveinterval = 5
+        validationinterval = 1
+
+        # data preprocessing
+        workers = 0
+        prefetch = 10
+
+        # augmentation
+        translation = 0
+        rotation = 0
+        noise = 0.0001
+        brightness = 0.001
+        contrast = 0.001
+        saturation = 0.001
+        hue = 0.001
+        use_imgaug = 1
+
+        # test
+        min_object_size_test = 200
+        write_poses = 0
+        save_eval_batches = 0
+
+        # output
+        net = 'training_checkpoints'
+        outf = 'train_casapose_8_16_objects'
+
+        # config
+        train_vectors_with_ground_truth = 1
+        load_h5_weights = 0
+        copy_weights_from_backup_network = 0
+        copy_weights_add_confidence_maps = 0
+        objects_in_input_network = 8
+        objects_to_copy = 1
+        objects_to_copy_list = 'config/objects_to_copy.csv'
+
+        confidence_filter_estimates = 1
+        confidence_choose_second = 0
+        train_vectors_with_ground_truth = 0
+        datatest_wxyz_quaterion = 0
+        filter_test_with_gt = 0
+
+        evalf = 'output'
+        datatest = 'import_data/test/test'
+        datameshes = 'import_data/test/models'
+        # datatest = '/workspace/CASAPose/import_data/test/test'
+        # datameshes = '/workspace/CASAPose/import_data/test/models'
+        data = ''
+        datatest_path_filter = None
+        color_dataset = 1
+        train_validation_split = None  # 0.9
+        backbonename = 'resnet18'
+        load_h5_weights = 1
+        # load_h5_filename = '../../../data/pretrained_models/result_w'
+        load_h5_filename = 'data/pretrained_models' + '/result_w.h5'
+
+    # opt = parse_config()
+    # opt.modelname = 'casapose_c_gcu5'
+    # opt.load_h5_weights = True
     opt.load_h5_filename = h5_path
     opt.datameshes = meshes_dir
-    opt.train_vectors_with_ground_truth = False
-    opt.save_eval_batches = True
-    opt.object = 'obj_000001,obj_000005,obj_000006,obj_000008,obj_000009,obj_000010,obj_000011,obj_000016'
+    # opt.train_vectors_with_ground_truth = False
+    # opt.save_eval_batches = True
+    # opt.object = 'obj_000001,obj_000005,obj_000006,obj_000008,obj_000009,obj_000010,obj_000011,obj_000016'
 
     objectsofinterest = [x.strip() for x in opt.object.split(",")]
     no_objects = len(objectsofinterest)
@@ -208,6 +299,8 @@ def load_casapose(opt, no_objects, height, width, input_segmentation_shape, chec
     # Create model
     CASAPose = Classifiers.get(opt.modelname)
     ver_dim = opt.no_points * 2
+    if opt.estimate_confidence:
+        ver_dim += opt.no_points
     if opt.modelname == "pvnet":
         ver_dim = ver_dim * no_objects
 
@@ -233,8 +326,10 @@ def load_casapose(opt, no_objects, height, width, input_segmentation_shape, chec
 
 
 def inference_on_image(image, net, no_objects, no_points, keypoints, camera_matrix, opt):
+    no_objects += 1
     # Instantiate model and run `image` through model to infer estimated poses
-    output_net = net([tf.expand_dims(image, 0)], training=False)
+    net_input = [tf.expand_dims(image, 0)]
+    output_net = net(net_input, training=False)
     output_seg, output_dirs, confidence = tf.split(output_net, [no_objects, no_points * 2, -1], 3)
     coordLSV_in = [output_seg, output_dirs, confidence]
     coords = CoordLSVotingWeighted(
@@ -251,7 +346,7 @@ def inference_on_image(image, net, no_objects, no_points, keypoints, camera_matr
 
 
 def draw_bb_inference(
-        img,
+        img,  # [x, x, 3]
         estimated_poses,  # [8, 3, 4]
         cuboids,  # [8, 1, 8, 3]
         camera_matrix,  # [1, 3, 3]
@@ -260,6 +355,9 @@ def draw_bb_inference(
         gt_pose=None,  # [8, 1, 3, 4]
         normal=[0.5, 0.5],
 ):
+
+    estimated_poses = tf.reshape(estimated_poses, [8, 3, 4])
+
     # image
     img_keypoints = tf.cast(((img * normal[1]) + normal[0]) * 255, dtype=tf.uint8).numpy()
     img_cuboids = img_keypoints.copy()
@@ -300,6 +398,7 @@ def draw_bb_inference(
                 print('skipped obj')
 
     # save image
+    os.makedirs(path, exist_ok=True)
     img_cuboids = Image.fromarray((img_cuboids).astype("uint8"))
     img_cuboids.save(path + "/" + str(file_prefix) + "_cuboids_all.png")
 
@@ -330,7 +429,7 @@ def image_transformation(img, cam_matrix):
 
 
 if __name__ == '__main__':
-    h5_path = '../casapose/data/pretrained_models/result_w'
+    h5_path = 'data/pretrained_models/result_w'
     meshes_dir = 'D:\\bop_toolkit\\data\\lm_251\\lm\\models'
     output_path = "output_251"
     synthetic_images = True  # True if inference on synthetic image, False if on real image (Samsung S22)
@@ -346,7 +445,7 @@ if __name__ == '__main__':
     image = load_image("import_data/test/test/000001/000001.jpg")
 
     # Crop image
-    image, camera_matrix = image_transformation(image, camera_matrix)
+    # image, camera_matrix = image_transformation(image, camera_matrix)
 
     # Infer poses from image
     poses_est = inference_on_image(image, model, no_objects, no_points, keypoints, camera_matrix, opt)
