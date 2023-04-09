@@ -733,9 +733,10 @@ class VectorfieldDataset:
                     json_path = imgpath.replace(filetype, "json")
                     data = json.load(open(json_path))
                     key = str(json_path)
-                    #self.gt_img[key] = {'object': [], 'centroid': []} # SET KEY AS PATH OF IMAGE
+                    
+                    # including 'keypoints' where the box would be drawn
                     self.gt_img[key] = {'object': [], 'centroid': [], 'keypoints': []} # SET KEY AS PATH OF IMAGE
-                    #print(data)
+                    
                    
                     for n, img in enumerate(data['objects']): 
                         self.gt_img[key]['object'].append(img['class'])
