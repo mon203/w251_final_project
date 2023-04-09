@@ -81,6 +81,7 @@ class VectorfieldDataset:
         self.imgs = []
         self.save_gt = save_gt
         self.gt_img = {}
+        #self.gt_keypoints = {}
 
         # second dataset can be used if a special distribution between a new and a known object should be used
         def load_data(
@@ -732,10 +733,14 @@ class VectorfieldDataset:
                     json_path = imgpath.replace(filetype, "json")
                     data = json.load(open(json_path))
                     key = str(json_path)
-                    self.gt_img[key] = {'object': [], 'centroid': []} # SET KEY AS PATH OF IMAGE
+                    #self.gt_img[key] = {'object': [], 'centroid': []} # SET KEY AS PATH OF IMAGE
+                    self.gt_img[key] = {'object': [], 'centroid': [], 'keypoints': []} # SET KEY AS PATH OF IMAGE
+                    #print(data)
+                   
                     for n, img in enumerate(data['objects']): 
                         self.gt_img[key]['object'].append(img['class'])
                         self.gt_img[key]['centroid'].append(img['projected_cuboid_centroid'][:2])
+                        self.gt_img[key]['keypoints'].append(img['projected_cuboid'])
                         #['cuboid_centroid'] = img['cuboid_centroid'][:2] # JUST X AND Y
 
                 if exists(imgpath) and exists(seg_path) and exists(imgpath.replace(filetype, "json")):
