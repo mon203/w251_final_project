@@ -283,6 +283,11 @@ def input_parameters(h5_path, meshes_dir, synthetic_image):
         camera_matrix = [[[345.5395354181145, 0, 319.4688241083385],
                          [0, 345.25337576116874, 237.47917860129158],
                          [0, 0, 1]]]
+        # webcam
+        # camera_matrix = [[[651.6790334459308, 0, 318.8997013097422],
+        #                  [0, 653.0024384819696, 228.01142813617105],
+        #                  [0, 0, 1]]]
+
     camera_matrix = tf.convert_to_tensor(camera_matrix, dtype=tf.float32)
 
     return opt, no_objects, height, width, input_segmentation_shape, checkpoint_path, \
