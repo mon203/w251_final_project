@@ -1,3 +1,7 @@
+# Introduction
+The dataset used for training our model can be found [here](https://github.com/mon203/w251_final_project/tree/main/dataset).
+The following are the steps used to create the dataset.
+
 # Dataset creation step-by-step
 
 1. Use `download_datasets.py` to download the required BOP datasets to `[DATA_PATH]`
