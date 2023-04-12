@@ -30,6 +30,40 @@ def draw_bb(
         cv2.circle(img, p, 1, color_points, -1)
     return img
 
+def draw_axes(img, keypoints, colors = [(0, 0, 255), (255, 0, 0),(255, 255, 255)], thickness = 1 ):
+    # args: image, projected_cuboid keypoints, list of 3 colors to use, tickenss
+    # returns the image with the line drawn
+    
+    # finds the center point
+    center = np.mean(keypoints, axis=0)
+    center = [int(i) for i in center]
+    
+    # finds the center of the top of the object
+    x_top = int((keypoints[2][0] + keypoints[6][0]) / 2)
+    y_top = int((keypoints[2][1] + keypoints[6][1]) / 2)
+    top_coords = [x_top, y_top]
+    
+    # finds the right of the top of the object
+    x_right = int((keypoints[3][0] + keypoints[7][0]) / 2)
+    y_right = int((keypoints[3][1] + keypoints[7][1]) / 2)
+    right_coords = [x_right, y_right]
+    
+    # finds the front of the top of the object
+    font_x_min = min(keypoints[0][0], keypoints[1][0], keypoints[2][0], keypoints[3][0])
+    font_x_max = max(keypoints[0][0], keypoints[1][0], keypoints[2][0], keypoints[3][0])
+    x_front = int((font_x_min + font_x_max) / 2)
+    
+    font_y_min = min(keypoints[0][1], keypoints[1][1], keypoints[2][1], keypoints[3][1])
+    font_y_max = max(keypoints[0][1], keypoints[1][1], keypoints[2][1], keypoints[3][1])
+    y_front = int((font_y_min + font_y_max) / 2)
+    front_coords = [x_front, y_front]
+    
+    # draws lines
+    img_test2 = cv2.line(img, center, top_coords, colors[0], thickness)
+    img_test2 = cv2.line(img, center, right_coords, colors[1], thickness)
+    img_test2 = cv2.line(img, center, front_coords, colors[2], thickness)
+
+    return img
 
 def draw_points(xy, img, color_points=(255, 0, 0), size=1, thickness=-1, line_type=cv2.LINE_AA):
 
