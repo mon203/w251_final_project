@@ -64,8 +64,8 @@ def draw_axes(img, keypoints, colors = [(0, 0, 255), (255, 0, 0),(255, 255, 255)
     front_x_max = max(keypoints[0][0], keypoints[4][0], keypoints[2][0], keypoints[6][0])
     x_front = int((front_x_min + front_x_max) / 2)
     
-    front_y_min = min(keypoints[0][1], keypoints[4][1], keypoints[2][1], keypoints[6][1])
-    front_y_max = max(keypoints[0][1], keypoints[4][1], keypoints[2][1], keypoints[6][1])
+    front_y_min = min(keypoints[1][1], keypoints[3][1], keypoints[5][1], keypoints[7][1])
+    front_y_max = max(keypoints[1][1], keypoints[3][1], keypoints[5][1], keypoints[7][1])
     y_front = int((front_y_min + front_y_max) / 2)
     front_coords = [x_front, y_front]
     
