@@ -60,8 +60,8 @@ def draw_axes(img, keypoints, colors = [(0, 0, 255), (255, 0, 0),(255, 255, 255)
     right_coords = [x_right, y_right]
     
     # finds the center of the front of the object
-    front_x_min = min(keypoints[0][0], keypoints[4][0], keypoints[2][0], keypoints[6][0])
-    front_x_max = max(keypoints[0][0], keypoints[4][0], keypoints[2][0], keypoints[6][0])
+    front_x_min = min(keypoints[1][0], keypoints[3][0], keypoints[5][0], keypoints[7][0])
+    front_x_max = max(keypoints[1][0], keypoints[3][0], keypoints[5][0], keypoints[7][0])
     x_front = int((front_x_min + front_x_max) / 2)
     
     front_y_min = min(keypoints[1][1], keypoints[3][1], keypoints[5][1], keypoints[7][1])
