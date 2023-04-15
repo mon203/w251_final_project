@@ -31,5 +31,6 @@ Details are in our paper and presentation file. Noticeable highlights
 - Our synthetic eval test dataset outperforms the LMO eval test dataset (as expected)
 
 Photo comparisons and graphs
-<img src-"8_vs_obj16_lmo_compare.png" alt="comparison1" width-"800" title="comparison1")
+
 ![comparison1](img/8_vs_obj16_lmo_compare.png)
+-  baseline vs training2 evaluated with LM-O dataset. Our training2 detects glue, has better accuracy on cat, but mis-detect ape.
