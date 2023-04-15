@@ -31,3 +31,4 @@ Details are in our paper and presentation file. Noticeable highlights
 - Our synthetic eval test dataset outperforms the LMO eval test dataset (as expected)
 
 Photo comparisons and graphs
+![comparison1](img/8_vs_obj16_lmo_compare)
