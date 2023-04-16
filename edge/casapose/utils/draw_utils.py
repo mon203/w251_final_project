@@ -76,6 +76,15 @@ def draw_axes(img, keypoints, colors = [(0, 0, 255), (255, 0, 0),(255, 255, 255)
 
     return img
 
+def draw_keypointnums(img, keypoints):
+    
+    p = 0
+    for point in keypoints:
+        img = cv2.putText(img, str(p), (point[0], point[1]))
+        p+=1
+    
+    return img
+
 def draw_points(xy, img, color_points=(255, 0, 0), size=1, thickness=-1, line_type=cv2.LINE_AA):
 
     xy = tuple(map(tuple, xy))
