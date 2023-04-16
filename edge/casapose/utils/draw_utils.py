@@ -38,36 +38,21 @@ def draw_axes(img, keypoints, colors = [(0, 0, 255), (255, 0, 0),(255, 255, 255)
     center = np.mean(keypoints, axis=0)
     center = [int(i) for i in center]
     
-    # finds the top of the object
-    top_x_min = min(keypoints[0][0], keypoints[1][0], keypoints[2][0], keypoints[3][0])
-    top_x_max = max(keypoints[0][0], keypoints[1][0], keypoints[2][0], keypoints[3][0])
-    x_top = int((top_x_min + top_x_max) / 2)
-    
-    top_y_min = min(keypoints[0][1], keypoints[1][1], keypoints[2][1], keypoints[3][1])
-    top_y_max = max(keypoints[0][1], keypoints[1][1], keypoints[2][1], keypoints[3][1])
-    y_top = int((top_y_min + top_y_max) / 2)
-    top_coords = [x_top, y_top]
+    # finds the top of the object    
+    point1_top = [(keypoints[1][0] + keypoints[2][0])/2, (keypoints[1][1] + keypoints[2][1])/2]
+    point2_top = [(keypoints[0][0] + keypoints[3][0])/2, (keypoints[0][1] + keypoints[3][1])/2]
+    top_coords = [(point1_top[0] + point2_top[0])/2, (point1_top[1] + point2_top[1])/2]
     
     
     # finds the right of the top of the object
-    right_x_min = min(keypoints[3][0], keypoints[7][0], keypoints[2][0], keypoints[6][0])
-    right_x_max = max(keypoints[3][0], keypoints[7][0], keypoints[2][0], keypoints[6][0])
-    x_right = int((right_x_min + right_x_max) / 2)
-    
-    right_y_min = min(keypoints[3][1], keypoints[7][1], keypoints[2][1], keypoints[6][1])
-    right_y_max = max(keypoints[3][1], keypoints[7][1], keypoints[2][1], keypoints[6][1])
-    y_right = int((right_y_min + right_y_max) / 2)
-    right_coords = [x_right, y_right]
+    point1_right = [(keypoints[3][0] + keypoints[6][0])/2, (keypoints[3][1] + keypoints[6][1])/2]
+    point2_right = [(keypoints[2][0] + keypoints[7][0])/2, (keypoints[2][1] + keypoints[7][1])/2]
+    right_coords = [(point1_right[0] + point2_right[0])/2, (point1_right[1] + point2_right[1])/2]
     
     # finds the center of the front of the object
-    front_x_min = min(keypoints[1][0], keypoints[3][0], keypoints[5][0], keypoints[7][0])
-    front_x_max = max(keypoints[1][0], keypoints[3][0], keypoints[5][0], keypoints[7][0])
-    x_front = int((front_x_min + front_x_max) / 2)
-    
-    front_y_min = min(keypoints[1][1], keypoints[3][1], keypoints[5][1], keypoints[7][1])
-    front_y_max = max(keypoints[1][1], keypoints[3][1], keypoints[5][1], keypoints[7][1])
-    y_front = int((front_y_min + front_y_max) / 2)
-    front_coords = [x_front, y_front]
+    point1_front = [(keypoints[1][0] + keypoints[7][0])/2, (keypoints[1][1] + keypoints[7][1])/2]
+    point2_front = [(keypoints[3][0] + keypoints[5][0])/2, (keypoints[3][1] + keypoints[5][1])/2]
+    front_coords = [(point1_front[0] + point2_front[0])/2, (point1_front[1] + point2_front[1])/2]
     
     # draws lines
     img_test2 = cv2.line(img, center, top_coords, colors[0], thickness)
@@ -77,10 +62,10 @@ def draw_axes(img, keypoints, colors = [(0, 0, 255), (255, 0, 0),(255, 255, 255)
     return img
 
 def draw_keypointnums(img, keypoints):
-    
     p = 0
     for point in keypoints:
-        img = cv2.putText(img, str(p), (point[0], point[1]), font = cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1, thickness = 1)
+        img = cv2.putText(img, str(p), [int(point[0]), int(point[1])], font = cv2.FONT_HERSHEY_SIMPLEX, 
+                          fontScale = 1, color = (0, 0, 0) thickness = 1)
         p+=1
     
     return img
