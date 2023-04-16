@@ -80,7 +80,7 @@ def draw_keypointnums(img, keypoints):
     
     p = 0
     for point in keypoints:
-        img = cv2.putText(img, str(p), (point[0], point[1]))
+        img = cv2.putText(img, str(p), (point[0], point[1]), font = cv2.FONT_HERSHEY_SIMPLEX, fontScale = 1, thickness = 1)
         p+=1
     
     return img
