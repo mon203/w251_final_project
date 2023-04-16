@@ -30,7 +30,7 @@ def draw_bb(
         cv2.circle(img, p, 1, color_points, -1)
     return img
 
-def draw_axes(img, keypoints, colors = [(0, 0, 255), (255, 0, 0),(255, 255, 255)], thickness = 1 ):
+def draw_axes(img, keypoints, colors = [(0, 0, 255), (255, 0, 0),(255, 255, 255)], thickness = 2 ):
     # args: image, projected_cuboid keypoints, list of 3 colors to use, tickenss
     # returns the image with the line drawn
     
@@ -41,23 +41,23 @@ def draw_axes(img, keypoints, colors = [(0, 0, 255), (255, 0, 0),(255, 255, 255)
     # finds the top of the object    
     point1_top = [(keypoints[1][0] + keypoints[2][0])/2, (keypoints[1][1] + keypoints[2][1])/2]
     point2_top = [(keypoints[0][0] + keypoints[3][0])/2, (keypoints[0][1] + keypoints[3][1])/2]
-    top_coords = [(point1_top[0] + point2_top[0])/2, (point1_top[1] + point2_top[1])/2]
+    top_coords = [int((point1_top[0] + point2_top[0])/2), int((point1_top[1] + point2_top[1])/2)]
     
     
     # finds the right of the top of the object
     point1_right = [(keypoints[3][0] + keypoints[6][0])/2, (keypoints[3][1] + keypoints[6][1])/2]
     point2_right = [(keypoints[2][0] + keypoints[7][0])/2, (keypoints[2][1] + keypoints[7][1])/2]
-    right_coords = [(point1_right[0] + point2_right[0])/2, (point1_right[1] + point2_right[1])/2]
+    right_coords = [int((point1_right[0] + point2_right[0])/2), int((point1_right[1] + point2_right[1])/2)]
     
     # finds the center of the front of the object
     point1_front = [(keypoints[1][0] + keypoints[7][0])/2, (keypoints[1][1] + keypoints[7][1])/2]
     point2_front = [(keypoints[3][0] + keypoints[5][0])/2, (keypoints[3][1] + keypoints[5][1])/2]
-    front_coords = [(point1_front[0] + point2_front[0])/2, (point1_front[1] + point2_front[1])/2]
+    front_coords = [int((point1_front[0] + point2_front[0])/2), int((point1_front[1] + point2_front[1])/2)]
     
     # draws lines
-    img_test2 = cv2.line(img, center, top_coords, colors[0], thickness)
-    img_test2 = cv2.line(img, center, right_coords, colors[1], thickness)
-    img_test2 = cv2.line(img, center, front_coords, colors[2], thickness)
+    cv2.line(img, center, top_coords, colors[0], thickness)
+    cv2.line(img, center, right_coords, colors[1], thickness)
+    cv2.line(img, center, front_coords, colors[2], thickness)
 
     return img
 
@@ -65,7 +65,7 @@ def draw_keypointnums(img, keypoints):
     p = 0
     for point in keypoints:
         img = cv2.putText(img, str(p), [int(point[0]), int(point[1])], font = cv2.FONT_HERSHEY_SIMPLEX, 
-                          fontScale = 1, color = (0, 0, 0) thickness = 1)
+                          fontScale = 1, color = (0, 0, 0), thickness = 1)
         p+=1
     
     return img
