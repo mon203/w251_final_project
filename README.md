@@ -6,7 +6,7 @@
 ### Links
 - [Example demo video](https://drive.google.com/file/d/1k8y4MAEKrb0HFcJcRr9AbG-AbUXjzYdz/view?usp=sharing)
 - [White paper](https://docs.google.com/document/d/1zfUYY-vTt2yYEcxVGPECIPDVON8W9Ux_a7JyBCBgyzg/edit?usp=sharing)
-- [Presentation slides](https://docs.google.com/presentation/d/1IoGQCWiyFQC74rt1_hlF1GrydBEhGGNRcdf96U5-y20/edit?usp=sharing))
+- [Presentation slides](https://docs.google.com/presentation/d/1IoGQCWiyFQC74rt1_hlF1GrydBEhGGNRcdf96U5-y20/edit?usp=sharing)
 
 ## Purpose
 
@@ -26,7 +26,7 @@ This repository contains information and code used for our CASAPose 6D pose esti
 - [dataset](dataset) - Dataset creation step-by-step. More detail in this folder's README.md file
 - [casapose](casapose) - Our training, validation, and eval environment. More detail in this folder's README.md file
 - [csv_outputs](csv_outputs) - Our training, validation, and eval output files. It is used to generate plots and tables in the [251_final_project_plots_tables.ipynb](251_final_project_plots_tables.ipynb) file.
-- [edge_final](edge_final) - Our docker and codes to place on the hover edge device. More detail in this folder's README.md file
+- [edge_final](edge_final) - Our docker and codes to place on the edge device. More detail in this folder's README.md file
 - [workings](workings) - Our notes, drafts, and test code for our project.
 
 Details are in our paper and presentation file. Noticeable highlights
