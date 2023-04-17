@@ -40,10 +40,17 @@ Once inside the CASAPose docker container, run the following to start the infere
 
 ### Step 4: Run inference
 
-To run the inference .py file:
+To run the inference .py files:
 ```bash
-python3 final_inference.py
+# For frames
+python3 final_inference_frames.py
+
+# For videos
+python3 final_inference_video.py
 ```
+
+Videos should be preprocessed using the [video_processor.ipynb](video_processor.ipynb).
+
 
 To view inference step by step, JupyterLab must be installed:
 ```bash
@@ -52,4 +59,4 @@ pip3 install jupyterlab
 jupyter lab --allow-root -ip=0.0.0.0
 ```
 
-Open [final_inf_frames.ipynb](final_inf_frames.ipynb).
+Open [final_inf_frames.ipynb](final_inf_frames.ipynb) or [final_inf_video.ipynb](final_inf_video.ipynb).
