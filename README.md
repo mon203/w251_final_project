@@ -11,22 +11,23 @@
 ## Introduction
 (from the paper and the presentation)
 
-This repository contains information and codes we use to build our Rover.
+This repository contains information and code used for our CASAPose 6D pose estimation project.
 
 ### The Architecture Pipeline
 
-![edge](img/edge.png)
 -  EC2 edge implmentation.
+![edge](img/edge.png)
 
+-  Theoretical application of our CASAPose model implementation packaged and deployed on a robot.
 ![edgeapp](img/edge_app.png)
--  Theoretical application of our CASAPose model implementation packaged and deployed on a Rover.
+
 
 ### Folder structure
 
 - [dataset](dataset) - Dataset creation step-by-step. More detail in this folder's README.md file
 - [casapose](casapose) - Our training, validation, and eval environment. More detail in this folder's README.md file
 - [csv_outputs](csv_outputs) - Our training, validation, and eval output files. It is used to generate plots and tables in the [251_final_project_plots_tables.ipynb](251_final_project_plots_tables.ipynb) file.
-- [edge](edge) - Our docker and codes to place on the hover edge device. More detail in this folder's README.md file
+- [edge_final](edge_final) - Our docker and codes to place on the hover edge device. More detail in this folder's README.md file
 - [workings](workings) - Our notes, drafts, and test code for our project.
 
 Details are in our paper and presentation file. Noticeable highlights
