@@ -1,19 +1,18 @@
 # w251 Spring 2023 Final Project
 
-## Project code name: Rover
+## 6DoF Multi-Object Pose Estimation
 #### Team Casey Hsiung, Daniele Grandi, Evan Fjeld, Mon Young, Preethi Raju
 
 ### Links
-- Our demo video
-- Our paper
-- our presentation slides
+- [Example demo video](https://drive.google.com/file/d/1k8y4MAEKrb0HFcJcRr9AbG-AbUXjzYdz/view?usp=sharing)
+- [White paper](https://docs.google.com/document/d/1zfUYY-vTt2yYEcxVGPECIPDVON8W9Ux_a7JyBCBgyzg/edit?usp=sharing)
+- [Presentation slides](https://docs.google.com/presentation/d/1IoGQCWiyFQC74rt1_hlF1GrydBEhGGNRcdf96U5-y20/edit?usp=sharing))
 
-## Introduction
-(from the paper and the presentation)
+## Purpose
 
 This repository contains information and code used for our CASAPose 6D pose estimation project.
 
-### The Architecture Pipeline
+### Edge Pipeline
 
 -  EC2 edge implmentation.
 ![edge](img/edge.png)
@@ -22,7 +21,7 @@ This repository contains information and code used for our CASAPose 6D pose esti
 ![edgeapp](img/edge_app.png)
 
 
-### Folder structure
+### Folder Structure
 
 - [dataset](dataset) - Dataset creation step-by-step. More detail in this folder's README.md file
 - [casapose](casapose) - Our training, validation, and eval environment. More detail in this folder's README.md file
