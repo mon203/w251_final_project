@@ -1,0 +1,196 @@
+{
+    "exported_object_classes": [ "obj_000001", "obj_000002", "obj_000003", "obj_000004", "obj_000005", "obj_000006", "obj_000007", "obj_000008", "obj_000009", "obj_000010", "obj_000011", "obj_000012", "obj_000013", "obj_000014", "obj_000015", "obj_000016" ],
+    "exported_objects": [ 
+        {
+            "class": "obj_000001",
+            "segmentation_class_id": 1,
+            "segmentation_instance_id": 0,
+            "fixed_model_transform": [ 
+                [ 1, 0, 0, 0 ], 
+                [ 0, 1, 0, 0 ], 
+                [ 0, 0, 1, 0 ], 
+                [ 0, 0, 0, 1 ]
+             ],
+            "cuboid_dimensions": [66.33549880981445,74.0015983581543,90.85639953613281]
+        }, 
+        {
+            "class": "obj_000002",
+            "segmentation_class_id": 2,
+            "segmentation_instance_id": 0,
+            "fixed_model_transform": [ 
+                [ 1, 0, 0, 0 ], 
+                [ 0, 1, 0, 0 ], 
+                [ 0, 0, 1, 0 ], 
+                [ 0, 0, 0, 1 ]
+             ],
+            "cuboid_dimensions": [195.3151016235352,93.49650192260742,213.6030044555664]
+        }, 
+        {
+            "class": "obj_000003",
+            "segmentation_class_id": 3,
+            "segmentation_instance_id": 0,
+            "fixed_model_transform": [ 
+                [ 1, 0, 0, 0 ], 
+                [ 0, 1, 0, 0 ], 
+                [ 0, 0, 1, 0 ], 
+                [ 0, 0, 0, 1 ]
+             ],
+            "cuboid_dimensions": [151.7886962890625,152.0079956054688,44.79609966278076]
+        }, 
+        {
+            "class": "obj_000004",
+            "segmentation_class_id": 4,
+            "segmentation_instance_id": 0,
+            "fixed_model_transform": [ 
+                [ 1, 0, 0, 0 ], 
+                [ 0, 1, 0, 0 ], 
+                [ 0, 0, 1, 0 ], 
+                [ 0, 0, 0, 1 ]
+             ],
+            "cuboid_dimensions": [133.8598022460938,133.1635971069336,80.80759811401367]
+        }, 
+        {
+            "class": "obj_000005",
+            "segmentation_class_id": 5,
+            "segmentation_instance_id": 0,
+            "fixed_model_transform": [ 
+                [ 1, 0, 0, 0 ], 
+                [ 0, 1, 0, 0 ], 
+                [ 0, 0, 1, 0 ], 
+                [ 0, 0, 0, 1 ]
+             ],
+            "cuboid_dimensions": [96.08219909667969,181.4337005615234,193.0011978149414]
+        }, 
+        {
+            "class": "obj_000006",
+            "segmentation_class_id": 6,
+            "segmentation_instance_id": 0,
+            "fixed_model_transform": [ 
+                [ 1, 0, 0, 0 ], 
+                [ 0, 1, 0, 0 ], 
+                [ 0, 0, 1, 0 ], 
+                [ 0, 0, 0, 1 ]
+             ],
+            "cuboid_dimensions": [62.34270095825195,125.1505012512207,115.861198425293]
+        }, 
+        {
+            "class": "obj_000007",
+            "segmentation_class_id": 7,
+            "segmentation_instance_id": 0,
+            "fixed_model_transform": [ 
+                [ 1, 0, 0, 0 ], 
+                [ 0, 1, 0, 0 ], 
+                [ 0, 0, 1, 0 ], 
+                [ 0, 0, 0, 1 ]
+             ],
+            "cuboid_dimensions": [115.2704010009766,88.47760009765625,86.19860076904297]
+        }, 
+        {
+            "class": "obj_000008",
+            "segmentation_class_id": 8,
+            "segmentation_instance_id": 0,
+            "fixed_model_transform": [ 
+                [ 1, 0, 0, 0 ], 
+                [ 0, 1, 0, 0 ], 
+                [ 0, 0, 1, 0 ], 
+                [ 0, 0, 0, 1 ]
+             ],
+            "cuboid_dimensions": [224.7390060424805,67.58979797363281,201.5900039672852]
+        }, 
+        {
+            "class": "obj_000009",
+            "segmentation_class_id": 9,
+            "segmentation_instance_id": 0,
+            "fixed_model_transform": [ 
+                [ 1, 0, 0, 0 ], 
+                [ 0, 1, 0, 0 ], 
+                [ 0, 0, 1, 0 ], 
+                [ 0, 0, 0, 1 ]
+             ],
+            "cuboid_dimensions": [95.56740188598633,67.66289901733398,83.70650100708008]
+        }, 
+        {
+            "class": "obj_000010",
+            "segmentation_class_id": 10,
+            "segmentation_instance_id": 0,
+            "fixed_model_transform": [ 
+                [ 1, 0, 0, 0 ], 
+                [ 0, 1, 0, 0 ], 
+                [ 0, 0, 1, 0 ], 
+                [ 0, 0, 0, 1 ]
+             ],
+            "cuboid_dimensions": [144.2248001098633,87.99250030517578,65.56079864501953]
+        }, 
+        {
+            "class": "obj_000011",
+            "segmentation_class_id": 11,
+            "segmentation_instance_id": 0,
+            "fixed_model_transform": [ 
+                [ 1, 0, 0, 0 ], 
+                [ 0, 1, 0, 0 ], 
+                [ 0, 0, 1, 0 ], 
+                [ 0, 0, 0, 1 ]
+             ],
+            "cuboid_dimensions": [32.38249969482422,74.51150131225586,172.1682052612305]
+        }, 
+        {
+            "class": "obj_000012",
+            "segmentation_class_id": 12,
+            "segmentation_instance_id": 0,
+            "fixed_model_transform": [ 
+                [ 1, 0, 0, 0 ], 
+                [ 0, 1, 0, 0 ], 
+                [ 0, 0, 1, 0 ], 
+                [ 0, 0, 0, 1 ]
+             ],
+            "cuboid_dimensions": [95.68449783325195,104.2145004272461,74.89310073852539]
+        }, 
+        {
+            "class": "obj_000013",
+            "segmentation_class_id": 13,
+            "segmentation_instance_id": 0,
+            "fixed_model_transform": [ 
+                [ 1, 0, 0, 0 ], 
+                [ 0, 1, 0, 0 ], 
+                [ 0, 0, 1, 0 ], 
+                [ 0, 0, 0, 1 ]
+             ],
+            "cuboid_dimensions": [257.0959930419922,113.2935981750488,137.7218017578125]
+        }, 
+        {
+            "class": "obj_000014",
+            "segmentation_class_id": 14,
+            "segmentation_instance_id": 0,
+            "fixed_model_transform": [ 
+                [ 1, 0, 0, 0 ], 
+                [ 0, 1, 0, 0 ], 
+                [ 0, 0, 1, 0 ], 
+                [ 0, 0, 0, 1 ]
+             ],
+            "cuboid_dimensions": [200.5791015625,108.8527984619141,207.8259963989258]
+        }, 
+        {
+            "class": "obj_000015",
+            "segmentation_class_id": 15,
+            "segmentation_instance_id": 0,
+            "fixed_model_transform": [ 
+                [ 1, 0, 0, 0 ], 
+                [ 0, 1, 0, 0 ], 
+                [ 0, 0, 1, 0 ], 
+                [ 0, 0, 0, 1 ]
+             ],
+            "cuboid_dimensions": [87.79129791259766,134.9549026489258,180.744499206543]
+        }, 
+        {
+            "class": "obj_000016",
+            "segmentation_class_id": 16,
+            "segmentation_instance_id": 0,
+            "fixed_model_transform": [ 
+                [ 1, 0, 0, 0 ], 
+                [ 0, 1, 0, 0 ], 
+                [ 0, 0, 1, 0 ], 
+                [ 0, 0, 0, 1 ]
+             ],
+            "cuboid_dimensions": [187.7628936767578,172.6574935913086,34.65168380737305]
+        } ]
+}

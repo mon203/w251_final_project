@@ -15,6 +15,9 @@ This repository contains information and codes we use to build our Rover.
 
 ### The Architecture Pipeline
 
+![edge](img/edge.png)
+-  EC2 edge implmentation.
+
 ![edgeapp](img/edge_app.png)
 -  Theoretical application of our CASAPose model implementation packaged and deployed on a Rover.
 
