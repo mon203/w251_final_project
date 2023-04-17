@@ -52,4 +52,4 @@ pip3 install jupyterlab
 jupyter lab --allow-root -ip=0.0.0.0
 ```
 
-Open [final_inf_frames.ipynb](edge_final/final_inf_frames.ipynb).
+Open [final_inf_frames.ipynb](final_inf_frames.ipynb).
